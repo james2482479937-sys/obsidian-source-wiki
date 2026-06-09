@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+_tmp_*/
+_smoke_test_vault/
+work/
+outputs/
+*.zip
+.obsidian/
+.claude/
+.claudian/
+*.log
+*.tmp

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Obsidian Source Wiki"
+  short_description: "Set up Obsidian folders, prerequisites, media import, Source notes, and Knowledge links."
+  default_prompt: "Set up or operate an Obsidian Source Wiki vault. Create the folder/rules system, check plugins and SiliconFlow prerequisites, process Capture links into structured Sources, and distill Sources into linked Knowledge notes."
