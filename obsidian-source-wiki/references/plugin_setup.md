@@ -53,11 +53,24 @@ The user's SiliconFlow account must have access and balance for the selected ASR
 
 ## Required Backend and Local Tools
 
-AnyContent backend should be running at:
+AnyContent backend is required for Douyin and other AnyContent routes. The backend should be reachable at:
 
 ```text
 http://127.0.0.1:8080
 ```
+
+For daily operation, the unified processor can start it automatically with:
+
+```powershell
+uv run python web/app.py
+```
+
+This means first-time setup must make sure both of these exist:
+
+- `uv` is installed and available in PATH.
+- the `anycontent-obsidian-backend` repo is cloned locally, preferably at `~/Documents/anycontent-obsidian-backend`.
+
+If the repo is somewhere else, pass `--backend-dir "<path-to-anycontent-obsidian-backend>"` when running `process_capture_links.py`.
 
 `ffmpeg` is required for Xiaohongshu video processing because the adapter extracts audio from temporary video files.
 
@@ -96,7 +109,8 @@ Already created:
 You still need to install/register:
 - AnyContent Vault Importer
 - SiliconFlow account and API key
-- AnyContent backend at http://127.0.0.1:8080
+- uv
+- anycontent-obsidian-backend local repo
 - ffmpeg
 - Python package requests
 

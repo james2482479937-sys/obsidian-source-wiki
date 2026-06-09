@@ -118,11 +118,12 @@ def main() -> None:
     print("1. Open this vault in Obsidian desktop.")
     print("2. Enable Community plugins.")
     print("3. Install and enable AnyContent Vault Importer.")
-    print("4. Start the AnyContent backend at http://127.0.0.1:8080.")
+    print("4. Install uv and clone anycontent-obsidian-backend locally.")
     print("5. Register SiliconFlow and enter its API key in AnyContent settings.")
     print("6. Install ffmpeg if video transcription is needed.")
     print("7. Ensure Python package requests is installed for Xiaohongshu processing.")
     print("8. Run check_environment.py before processing media links.")
+    print("9. During normal processing, process_capture_links.py can auto-start the AnyContent backend.")
     print("")
     print("agent_instruction: After folder creation, report these next steps to the user. Do not claim the media workflow is ready until check_environment.py reports environment_ready=true.")
 

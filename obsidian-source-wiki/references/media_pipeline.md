@@ -4,7 +4,15 @@
 
 Do not process Douyin or Xiaohongshu links until `scripts/check_environment.py --vault "<vault>"` has been run.
 
-If it reports missing AnyContent, missing SiliconFlow API key, missing AnyContent backend, or missing ffmpeg, stop and report the missing requirements to the user first.
+If it reports missing AnyContent, missing SiliconFlow API key, missing AnyContent backend repository, `uv`, or missing ffmpeg, stop and report the missing requirements to the user first.
+
+For configured users, the unified processor can start the AnyContent backend automatically. It checks `http://127.0.0.1:8080`, then starts the backend with:
+
+```powershell
+uv run python web/app.py
+```
+
+This requires the `anycontent-obsidian-backend` repo to exist locally. The processor auto-discovers common locations such as `~/Documents/anycontent-obsidian-backend`; otherwise pass `--backend-dir "<path-to-anycontent-obsidian-backend>"`.
 
 For Xiaohongshu routes, also require the Python package `requests`.
 

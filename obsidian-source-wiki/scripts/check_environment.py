@@ -1,4 +1,5 @@
 import argparse
+import os
 import json
 import shutil
 import socket
@@ -34,6 +35,25 @@ def backend_reachable(host: str = "127.0.0.1", port: int = 8080) -> bool:
         return False
 
 
+def discover_backend_dir() -> Path | None:
+    candidates = []
+    env_path = os.environ.get("ANYCONTENT_BACKEND_DIR")
+    if env_path:
+        candidates.append(Path(env_path).expanduser())
+    candidates.extend(
+        [
+            Path.cwd() / "anycontent-obsidian-backend",
+            Path.home() / "Documents" / "anycontent-obsidian-backend",
+            Path.home() / "anycontent-obsidian-backend",
+        ]
+    )
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        if (resolved / "web" / "app.py").exists():
+            return resolved
+    return None
+
+
 def module_exists(name: str) -> bool:
     return importlib.util.find_spec(name) is not None
 
@@ -67,9 +87,15 @@ def main() -> None:
         missing.append("Register SiliconFlow and enter its API key in AnyContent Vault Importer settings.")
 
     backend_ok = backend_reachable()
-    print(f"anycontent_backend={'ok' if backend_ok else 'missing'} http://127.0.0.1:8080")
-    if not backend_ok:
-        missing.append("Start the AnyContent backend at http://127.0.0.1:8080.")
+    backend_dir = discover_backend_dir()
+    uv_ok = bool(shutil.which("uv"))
+    backend_startable = bool(backend_dir and uv_ok)
+    backend_status = "ok" if backend_ok else "auto_start_available" if backend_startable else "missing"
+    print(f"anycontent_backend={backend_status} http://127.0.0.1:8080")
+    print(f"anycontent_backend_repo={'ok' if backend_dir else 'missing'} {backend_dir or ''}")
+    print(f"uv={'ok' if uv_ok else 'missing'}")
+    if not backend_ok and not backend_startable:
+        missing.append("Install uv and clone anycontent-obsidian-backend so the unified processor can start the backend.")
 
     ffmpeg_ok = bool(shutil.which("ffmpeg"))
     python_ok = bool(shutil.which("python"))

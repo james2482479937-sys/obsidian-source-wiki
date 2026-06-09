@@ -1,9 +1,13 @@
 import argparse
 import datetime as dt
 import json
+import os
 import re
+import shutil
+import socket
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 
@@ -34,6 +38,81 @@ def read_text(path: Path) -> str:
 
 def scripts_dir() -> Path:
     return Path(__file__).resolve().parent
+
+
+def backend_reachable(host: str = "127.0.0.1", port: int = 8080) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=2):
+            return True
+    except OSError:
+        return False
+
+
+def discover_backend_dir(explicit: str | None) -> Path | None:
+    candidates = []
+    if explicit:
+        candidates.append(Path(explicit).expanduser())
+    env_path = os.environ.get("ANYCONTENT_BACKEND_DIR")
+    if env_path:
+        candidates.append(Path(env_path).expanduser())
+    candidates.extend(
+        [
+            Path.cwd() / "anycontent-obsidian-backend",
+            Path.home() / "Documents" / "anycontent-obsidian-backend",
+            Path.home() / "anycontent-obsidian-backend",
+        ]
+    )
+    for candidate in candidates:
+        resolved = candidate.resolve()
+        if (resolved / "web" / "app.py").exists():
+            return resolved
+    return None
+
+
+def ensure_anycontent_backend(vault: Path, backend_dir_arg: str | None, startup_timeout: int) -> None:
+    if backend_reachable():
+        print("anycontent_backend=already_running http://127.0.0.1:8080")
+        return
+
+    backend_dir = discover_backend_dir(backend_dir_arg)
+    if not backend_dir:
+        raise SystemExit(
+            "AnyContent backend is not running and the backend directory was not found. "
+            "Clone it first, or pass --backend-dir \"<path-to-anycontent-obsidian-backend>\"."
+        )
+
+    uv_path = shutil.which("uv")
+    if not uv_path:
+        raise SystemExit("AnyContent backend is not running and uv was not found in PATH.")
+
+    log_dir = vault / "_System" / "Logs"
+    log_dir.mkdir(parents=True, exist_ok=True)
+    log_path = log_dir / "anycontent-backend.log"
+    log_file = log_path.open("a", encoding="utf-8")
+
+    creationflags = 0
+    if os.name == "nt":
+        creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
+
+    process = subprocess.Popen(
+        [uv_path, "run", "python", "web/app.py"],
+        cwd=backend_dir,
+        stdout=log_file,
+        stderr=subprocess.STDOUT,
+        stdin=subprocess.DEVNULL,
+        creationflags=creationflags,
+    )
+
+    deadline = time.time() + startup_timeout
+    while time.time() < deadline:
+        if backend_reachable():
+            print(f"anycontent_backend=started pid={process.pid} log={log_path}")
+            return
+        if process.poll() is not None:
+            raise SystemExit(f"AnyContent backend exited early. Check log: {log_path}")
+        time.sleep(1)
+
+    raise SystemExit(f"Timed out starting AnyContent backend. Check log: {log_path}")
 
 
 def default_capture_files(vault: Path, date: str) -> list[Path]:
@@ -164,6 +243,9 @@ def main() -> None:
     parser.add_argument("--date", default=today(), help="Capture date folder, default today.")
     parser.add_argument("--timeout", type=int, default=360, help="AnyContent wait timeout.")
     parser.add_argument("--assume-ready", action="store_true", help="Skip environment check for already configured vaults.")
+    parser.add_argument("--backend-dir", help="Path to anycontent-obsidian-backend. Auto-discovered if omitted.")
+    parser.add_argument("--backend-startup-timeout", type=int, default=60, help="Seconds to wait for AnyContent backend startup.")
+    parser.add_argument("--no-start-backend", action="store_true", help="Do not auto-start AnyContent backend.")
     parser.add_argument("--dry-run", action="store_true", help="Only print detected routes.")
     args = parser.parse_args()
 
@@ -185,6 +267,10 @@ def main() -> None:
 
     if args.dry_run:
         return
+
+    has_anycontent_route = any(item["platform"] == "anycontent" for item in items)
+    if has_anycontent_route and not args.no_start_backend:
+        ensure_anycontent_backend(vault, args.backend_dir, args.backend_startup_timeout)
 
     if not args.assume_ready:
         env_output = run(

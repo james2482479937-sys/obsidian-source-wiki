@@ -5,7 +5,7 @@ description: Build and operate an Obsidian-based AI knowledge workflow with Capt
 
 # Obsidian Source Wiki
 
-Version: 0.3.0
+Version: 0.3.1
 
 Use this skill to help a user build or operate an Obsidian knowledge workflow where plugins import raw material, scripts bridge unsupported platforms, and the agent performs semantic structuring and knowledge distillation.
 
@@ -89,6 +89,20 @@ This script routes:
 - Douyin/TikTok/WeChat/YouTube links to AnyContent,
 - Xiaohongshu links to the Xiaohongshu adapter,
 - explicit image-saving requests to `save_images_from_raw.py`.
+
+For AnyContent routes, the unified processor first checks `http://127.0.0.1:8080`. If the backend is not running, it auto-discovers `anycontent-obsidian-backend` and starts the same backend command used manually:
+
+```powershell
+uv run python web/app.py
+```
+
+If the backend repo is not in a common location, pass it explicitly:
+
+```powershell
+python scripts/process_capture_links.py --vault "<vault>" --date YYYY-MM-DD --assume-ready --backend-dir "<path-to-anycontent-obsidian-backend>"
+```
+
+Use `--no-start-backend` only when debugging and you want to manage the backend manually.
 
 After it creates draft Source notes, run the semantic Source structuring pass.
 
