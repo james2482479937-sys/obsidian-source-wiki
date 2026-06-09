@@ -10,6 +10,14 @@ For Xiaohongshu routes, also require the Python package `requests`.
 
 ## Platform Decision
 
+For normal operation, prefer the unified Capture processor:
+
+```powershell
+python scripts/process_capture_links.py --vault "<vault>" --capture-file "<capture-file>" --assume-ready
+```
+
+Use the lower-level scripts only when debugging one route.
+
 Use this routing:
 
 ```text

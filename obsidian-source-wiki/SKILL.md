@@ -5,7 +5,7 @@ description: Build and operate an Obsidian-based AI knowledge workflow with Capt
 
 # Obsidian Source Wiki
 
-Version: 0.2.0
+Version: 0.3.0
 
 Use this skill to help a user build or operate an Obsidian knowledge workflow where plugins import raw material, scripts bridge unsupported platforms, and the agent performs semantic structuring and knowledge distillation.
 
@@ -68,6 +68,30 @@ Recommended optional plugins:
 11. Use `scripts/create_knowledge_note.py` to create the Knowledge note scaffold and update the Source backlink.
 12. Fill the generated Knowledge note with the distilled concept, method, project, workflow, or media note.
 
+## Fast Path for Configured Vaults
+
+If the user says their Obsidian/AnyContent/SiliconFlow/ffmpeg environment is already configured, do not spend tokens re-explaining first-time setup.
+
+Use:
+
+```powershell
+python scripts/process_capture_links.py --vault "<vault>" --capture-file "<capture-file>" --assume-ready
+```
+
+or for today's whole External capture folder:
+
+```powershell
+python scripts/process_capture_links.py --vault "<vault>" --date YYYY-MM-DD --assume-ready
+```
+
+This script routes:
+
+- Douyin/TikTok/WeChat/YouTube links to AnyContent,
+- Xiaohongshu links to the Xiaohongshu adapter,
+- explicit image-saving requests to `save_images_from_raw.py`.
+
+After it creates draft Source notes, run the semantic Source structuring pass.
+
 ## Important Boundaries
 
 - Do not delete user notes or raw captures unless explicitly asked.
@@ -89,5 +113,6 @@ Recommended optional plugins:
 - Knowledge notes: `references/knowledge_distillation.md`
 - Failure handling: `references/troubleshooting.md`
 - Reusable scripts: `scripts/`
+- Unified Capture processor: `scripts/process_capture_links.py`
 - Knowledge linking helper: `scripts/create_knowledge_note.py`
 - Rule templates to copy into vaults: `assets/rules/`

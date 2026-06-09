@@ -67,6 +67,27 @@ knowledge_links: []
         assert "[[20_Knowledge/Concepts/test-concept]]" in source_text
         assert "[[10_Sources/2026-06-10/test-source]]" in knowledge_text
 
+        capture = vault / "00_Capture" / "External" / "2026-06-10" / "links.md"
+        write(
+            capture,
+            "小红书测试 http://xhslink.com/o/example\n抖音测试 https://v.douyin.com/example/ 保存图片\n",
+        )
+        dry_run = run(
+            [
+                sys.executable,
+                str(skill / "scripts" / "process_capture_links.py"),
+                "--vault",
+                str(vault),
+                "--capture-file",
+                str(capture),
+                "--dry-run",
+            ],
+            cwd=skill,
+        )
+        assert "xhs" in dry_run
+        assert "anycontent" in dry_run
+        assert "save_images" in dry_run
+
         if args.keep:
             keep_path = Path.cwd() / "_smoke_test_vault"
             if keep_path.exists():

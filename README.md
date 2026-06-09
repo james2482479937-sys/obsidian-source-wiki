@@ -24,6 +24,7 @@ Capture 随手记录
 - 把视频转录、图片 OCR、网页内容整理成 Source
 - 把 Source 进一步提炼成 Knowledge
 - 自动维护 Source 和 Knowledge 的双向链接
+- 对已经配置好环境的用户，一条命令处理 Capture 里的抖音/小红书链接
 
 ## 文件夹结构
 
@@ -90,6 +91,12 @@ Use obsidian-source-wiki to check whether this vault is ready for Douyin and Xia
 
 ```text
 Use obsidian-source-wiki to process today's Capture links into Sources.
+```
+
+如果你的环境已经配置好，Agent 会优先使用统一入口：
+
+```powershell
+python obsidian-source-wiki/scripts/process_capture_links.py --vault "<vault>" --date YYYY-MM-DD --assume-ready
 ```
 
 把 Source 提炼成 Knowledge：

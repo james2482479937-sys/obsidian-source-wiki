@@ -41,6 +41,12 @@ Expected agent behavior:
 - save images only when the capture text explicitly asks for it,
 - polish raw output into structured Source notes.
 
+For already configured users, the agent should prefer:
+
+```powershell
+python scripts/process_capture_links.py --vault "<vault>" --date YYYY-MM-DD --assume-ready
+```
+
 ## Distill Source Into Knowledge
 
 ```text
