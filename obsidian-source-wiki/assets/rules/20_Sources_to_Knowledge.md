@@ -12,11 +12,19 @@
 
 ## Output
 
-- `20_Knowledge/Concepts/`
-- `20_Knowledge/Methods/`
-- `20_Knowledge/Projects/`
-- `20_Knowledge/Workflows/`
-- `20_Knowledge/Media/`
+- `20_Knowledge/External/`  ← 来自外部内容（视频、图文）的知识提炼
+- `20_Knowledge/Personal/`  ← 来自个人随记、碎点子的知识提炼
+
+## 如何判断放 External 还是 Personal
+
+**唯一判断依据是 Source 文件的 `capture_source` 字段，不依赖 Capture 文件是否还存在。**
+
+```yaml
+capture_source: external  →  Knowledge/External/
+capture_source: personal  →  Knowledge/Personal/
+```
+
+如果 Source 缺少 `capture_source` 字段，先补上再提炼，不要猜测。
 
 ## Knowledge Rules
 
@@ -99,4 +107,3 @@ related:
 - `##` 用于主要模块。
 - `###` 用于模块下的具体观点。
 - 不要跳级使用标题。
-

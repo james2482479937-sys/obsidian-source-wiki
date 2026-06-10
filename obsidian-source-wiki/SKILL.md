@@ -13,9 +13,11 @@ Use this skill to help a user build or operate an Obsidian knowledge workflow wh
 
 Treat the vault as five areas:
 
-- `00_Capture`: daily lightweight capture.
-- `10_Sources`: structured source material for future reading and traceability.
-- `20_Knowledge`: distilled evergreen concepts, methods, projects, workflows, and media notes.
+- `00_Capture/External`: drop links and external content here, no naming required.
+- `00_Capture/Personal`: personal notes, ideas, and rough thoughts, no naming required.
+- `10_Sources`: structured source material for future reading and traceability. Every Source records `capture_source: external` or `capture_source: personal` so the origin survives Capture cleanup.
+- `20_Knowledge/External`: knowledge distilled from external content (videos, articles).
+- `20_Knowledge/Personal`: knowledge distilled from the user's own ideas and notes.
 - `90_Rules`: rules that govern capture, source structuring, cleanup, naming, and knowledge distillation.
 - `_System`: plugin output, raw transcripts, media temp files, attachments, and logs.
 
