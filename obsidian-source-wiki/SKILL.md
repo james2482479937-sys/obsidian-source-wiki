@@ -109,6 +109,55 @@ Recommended optional plugins:
 - QuickAdd for capture shortcuts.
 - Excalidraw for sketches and diagrams.
 
+Required plugins for the dashboard:
+
+- **Dataview**: queries frontmatter to generate tables, lists, and calendar views.
+- **Heatmap Calendar**: renders a GitHub-style contribution heatmap by `created` date.
+
+Install both via Obsidian → Settings → Community Plugins → Browse, or let the agent download and register them automatically.
+
+## Dashboard
+
+The vault includes a live dashboard at `_System/Dashboard.md`. Open it in Obsidian after enabling Dataview and Heatmap Calendar.
+
+### What it shows
+
+| Section | Description |
+|---------|-------------|
+| 今日收录 | Sources created today |
+| Source 状态总览 | Counts by `knowledge_status` (pending / done / skipped) and `source_type` |
+| 阅读进度 | Files with `reading_status: reading` (with bookmark) and `unread` |
+| 待提炼队列 | All Sources with `knowledge_status: pending` |
+| 已跳过（待复看） | Skipped Sources for periodic re-evaluation |
+| Knowledge 库 | All Knowledge files, newest first |
+| 按主题浏览 | Sources grouped by tag — includes skipped content so nothing is "lost" |
+| 每日热力图 | Heatmap of daily capture volume across the year |
+| Capture 漏斗 | Source count → done → pending → skipped → Knowledge count → coverage % |
+
+### Reading progress fields
+
+Every Source file carries two tracking fields in its frontmatter:
+
+```yaml
+reading_status: unread      # unread / reading / done
+reading_bookmark: ""        # section heading where you left off, e.g. "## 市场胜出的反直觉"
+```
+
+When you start reading a Source, update:
+```yaml
+reading_status: reading
+reading_bookmark: "## 你读到的小节标题"
+```
+
+The dashboard's "正在阅读" table will show the file and the exact section, so next session you can jump straight there.
+
+### Agent responsibilities
+
+- When creating a new Source, always initialize `reading_status: unread` and `reading_bookmark: ""`.
+- When generating a Knowledge note from a Source, set `knowledge_status: done` on that Source immediately.
+- When a Source is evaluated and intentionally skipped, set `knowledge_status: skipped`.
+- Never leave `knowledge_status` as `pending` on a Source that has been reviewed.
+
 ## Operating Workflow
 
 1. Discover the user's vault path.
