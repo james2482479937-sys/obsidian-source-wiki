@@ -23,18 +23,44 @@ Read `references/folder_schema.md` before changing folder design.
 
 ## First-Time Setup Protocol
 
-When a user asks to create this workflow for a new vault, do all of the following. Do not stop after creating folders.
+When a user asks to set up this workflow for a new vault, follow this sequence. Do not stop after creating folders.
 
-1. Discover or ask for the Obsidian vault path.
-2. Run `scripts/setup_vault.py --vault "<vault>" --configure-plugins` to create the folder system and copy rule files.
-3. Run `scripts/check_environment.py --vault "<vault>"`.
-4. Read `references/plugin_setup.md`.
-5. Report a setup checklist to the user with three sections:
-   - Already done: folders, rules, detected plugins/tools.
-   - User must install or register: missing Obsidian plugins, AnyContent backend, SiliconFlow API key, ffmpeg, Python dependencies.
-   - Blocked media features: which import routes cannot work until the missing items are complete.
-6. If AnyContent or SiliconFlow API key is missing, clearly say that Douyin video/image import, Xiaohongshu video ASR, and Xiaohongshu image OCR are not ready yet.
-7. After the user confirms the missing prerequisites are done, rerun `scripts/check_environment.py --vault "<vault>"` before processing links.
+### Step 1 — Collect two answers from the user
+
+Ask only these two questions (do not ask anything else):
+
+1. "你的 Obsidian vault 路径是什么？"（如果能从系统推断就直接说出来让用户确认）
+2. "你的 SiliconFlow API key 是什么？（在 https://siliconflow.cn 免费注册获取）"
+
+### Step 2 — Run the onboarding script
+
+```powershell
+python obsidian-source-wiki/scripts/onboarding.py --vault "<vault>" --api-key "<sk-xxx>"
+```
+
+This single script handles everything automatically:
+- installs uv, ffmpeg, Python requests
+- clones anycontent-obsidian-backend
+- creates vault folder structure and rule files
+- writes the API key into AnyContent plugin settings
+- runs check_environment and reports status
+
+### Step 3 — Tell the user the only remaining manual steps
+
+After the script finishes, read its output and tell the user exactly which manual steps are still needed. The script will print them clearly. They are always the same two things if not done yet:
+
+1. Install Obsidian desktop + enable Community plugins
+2. Install AnyContent Vault Importer from Community plugins, then open the vault once
+
+### Step 4 — Verify
+
+After the user confirms the manual steps are done, run:
+
+```powershell
+python obsidian-source-wiki/scripts/check_environment.py --vault "<vault>"
+```
+
+Do not proceed to media processing until the output shows `environment_ready=true`.
 
 Minimum requirements for the full workflow:
 
