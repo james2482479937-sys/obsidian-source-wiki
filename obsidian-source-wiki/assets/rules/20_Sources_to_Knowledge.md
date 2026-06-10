@@ -8,7 +8,15 @@
 
 ## Input
 
-- `10_Sources/YYYY-MM-DD/`
+- `10_Sources/YYYY-MM-DD/`，只处理 `knowledge_status: pending` 的文件
+
+**每次提炼前，先扫 pending，不要全量读取所有 Source：**
+
+```powershell
+Select-String -Path "vault\10_Sources\**\*.md" -Pattern "^knowledge_status: pending" | Select-Object Path
+```
+
+处理完一个 Source 后，立即把该文件的 `knowledge_status` 改为 `done`。
 
 ## Output
 

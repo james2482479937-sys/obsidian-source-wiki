@@ -151,6 +151,7 @@ source_url:
 saved_at:
 capture_source: external   # 或 personal
 status: source_structured
+knowledge_status: pending  # 改为 done 后不再重复提炼
 tags: []
 knowledge_links: []
 ---
