@@ -26,6 +26,18 @@ capture_source: personal  →  Knowledge/Personal/
 
 如果 Source 缺少 `capture_source` 字段，先补上再提炼，不要猜测。
 
+## Token 效率：分层阅读，不默认全文读取
+
+Source 文件分三层，按需读取：
+
+| 层 | 内容 | 何时读 |
+|----|------|--------|
+| `Structure Tags` | 主题、人物、概念、场景（几十 token） | **每次都先读这一层**，判断值不值得提炼、提炼成什么 |
+| 语义小标题区 | H2 标题 + 每段首句（几百 token） | 决定提炼后，读这一层确定结构和观点 |
+| 原始转录 / OCR | 完整逐字内容（可能几千 token） | 只在需要引用原话时才读 |
+
+**不要默认全文读 Source。** 先读 `Structure Tags`，够用就够用。
+
 ## Knowledge Rules
 
 - 每个 Knowledge 文件只围绕一个核心主题。

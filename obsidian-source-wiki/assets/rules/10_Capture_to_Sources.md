@@ -34,8 +34,15 @@ Get-ChildItem "vault\00_Capture\Personal" -Recurse -File | Sort-Object LastWrite
 ```
 
 判断规则：
-- Capture 对应的 Source 已存在 → 跳过，不重复处理
-- Source 里找不到对应文件 → 才是真正需要处理的
+- **比对依据必须是 `source_url` 字段，不是文件名。** 文件名可能被修改，`source_url` 才是唯一可靠的去重依据。
+- 用以下命令扫所有 Source 的 `source_url`，再和 Capture 里的链接对比：
+
+```powershell
+Select-String -Path "vault\10_Sources\**\*.md" -Pattern "^source_url:" | Select-Object Line
+```
+
+- Capture 里的链接在上面输出中已存在 → 跳过，不重复处理
+- 没找到 → 才是真正需要处理的
 
 ## General Rules
 
