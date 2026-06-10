@@ -4,27 +4,32 @@
 
 ---
 
-## 前置条件（只需手动做一次）
+## 第一步：安装 Obsidian（让 agent 帮你执行）
 
-**1. 安装 Obsidian 桌面端**
+**Windows（让 agent 在终端运行）：**
+```powershell
+winget install Obsidian.Obsidian
+```
 
-https://obsidian.md/download
+**Mac（让 agent 在终端运行）：**
+```bash
+brew install --cask obsidian
+```
 
-**2. 安装 AnyContent Vault Importer 插件**
-
-打开 Obsidian → Settings → Community plugins → Browse  
-搜索 `AnyContent Vault Importer` → Install → Enable
-
-**3. 准备一个 SiliconFlow API key**
-
-注册并获取免费 key：https://siliconflow.cn → API Keys  
-（用于视频语音转文字和图片 OCR）
+或直接下载：https://obsidian.md/download
 
 ---
 
-## 一条命令完成剩余所有配置
+## 第二步：准备 SiliconFlow API key
 
-确保已安装 Python 3.10+，然后：
+注册并获取免费 key：https://siliconflow.cn → API Keys  
+（用于视频语音转文字和图片 OCR，免费额度足够日常使用）
+
+---
+
+## 第三步：运行 onboarding 脚本（让 agent 帮你执行）
+
+确保已安装 Python 3.10+，让 agent 运行：
 
 ```bash
 python obsidian-source-wiki/scripts/onboarding.py
@@ -35,7 +40,7 @@ python obsidian-source-wiki/scripts/onboarding.py
 1. **你的 Obsidian vault 在哪里？**（通常可以直接回车用自动检测到的路径）
 2. **你的 SiliconFlow API key 是？**（粘贴进去）
 
-然后脚本自动完成：
+然后 agent 帮你自动完成：
 
 - ✅ 安装 `uv`（用于启动 AnyContent 后端）
 - ✅ 安装 `ffmpeg`（用于小红书视频处理）
@@ -43,7 +48,22 @@ python obsidian-source-wiki/scripts/onboarding.py
 - ✅ 克隆 AnyContent 后端到本地
 - ✅ 创建 vault 文件夹结构
 - ✅ 写入 API key 到插件配置
-- ✅ 运行环境检查，输出 `environment_ready=true`
+- ✅ 运行环境检查
+
+---
+
+## 第四步：安装 AnyContent Vault Importer 插件
+
+打开 Obsidian → Settings → Community plugins → 打开 Community plugins → Browse  
+搜索 `AnyContent Vault Importer` → Install → Enable
+
+完成后让 agent 再跑一次 onboarding，它会自动把 API key 写入插件配置：
+
+```bash
+python obsidian-source-wiki/scripts/onboarding.py --vault "<你的vault路径>" --api-key "<你的key>"
+```
+
+最终看到 `environment_ready=true` 即表示配置完成。
 
 ---
 
@@ -51,7 +71,7 @@ python obsidian-source-wiki/scripts/onboarding.py
 
 1. 打开 Obsidian，确认 vault 已加载
 2. 在 `00_Capture/External/` 下新建一个笔记，粘贴任意抖音或小红书链接
-3. 打开 Claude Code，对 agent 说：
+3. 对 agent 说：
 
 ```
 处理今天的链接

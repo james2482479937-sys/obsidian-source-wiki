@@ -45,14 +45,42 @@ This single script handles everything automatically:
 - writes the API key into AnyContent plugin settings
 - runs check_environment and reports status
 
-### Step 3 — Tell the user the only remaining manual steps
+### Step 3 — Guide the user through Obsidian installation (if needed)
 
-After the script finishes, read its output and tell the user exactly which manual steps are still needed. The script will print them clearly. They are always the same two things if not done yet:
+If `check_environment.py` reports `plugins_dir_exists=false`, Obsidian is not installed or the vault has never been opened. Guide the user through the following steps — you can run the download command or open the URL for them:
 
-1. Install Obsidian desktop + enable Community plugins
-2. Install AnyContent Vault Importer from Community plugins, then open the vault once
+**Install Obsidian:**
 
-### Step 4 — Verify
+- Windows: `winget install Obsidian.Obsidian` (or download from https://obsidian.md/download)
+- Mac: `brew install --cask obsidian` (or download from https://obsidian.md/download)
+
+**Open the vault for the first time:**
+
+1. Launch Obsidian
+2. Click "Open folder as vault"
+3. Select the vault path that `onboarding.py` created
+
+**Enable Community plugins:**
+
+1. In Obsidian: Settings (gear icon) → Community plugins
+2. Click "Turn on community plugins"
+
+### Step 4 — Guide the user through AnyContent Vault Importer installation (if needed)
+
+If `check_environment.py` reports `plugin:anycontent-vault-importer=missing`, guide the user:
+
+1. In Obsidian: Settings → Community plugins → Browse
+2. Search: `AnyContent Vault Importer`
+3. Click Install → Enable
+4. Go to the plugin settings and enter the SiliconFlow API key
+
+After the user confirms the plugin is installed, re-run `onboarding.py` with `--api-key` so the script writes the key into the plugin's config file automatically:
+
+```powershell
+python obsidian-source-wiki/scripts/onboarding.py --vault "<vault>" --api-key "<sk-xxx>"
+```
+
+### Step 5 — Verify
 
 After the user confirms the manual steps are done, run:
 

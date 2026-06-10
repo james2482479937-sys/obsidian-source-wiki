@@ -157,7 +157,7 @@ def detect_vault() -> str:
 
 # ── backend ───────────────────────────────────────────────────────────────────
 
-BACKEND_REPO = "https://github.com/anycontent/anycontent-obsidian-backend.git"
+BACKEND_REPO = "https://github.com/vancoder4-cyber/anycontent-obsidian-backend"
 DEFAULT_BACKEND_DIR = Path.home() / "Documents" / "anycontent-obsidian-backend"
 
 
