@@ -15,6 +15,26 @@
 
 - `10_Sources/YYYY-MM-DD/`
 
+## 处理前必须先比对现有 Source（最容易犯错的步骤）
+
+**不要看到 Capture 文件就直接处理。** Capture 文件的日期 ≠ 未处理，必须先确认 Source 里有没有对应文件。
+
+```powershell
+# 1. 确认哪些日期已有 Source
+Get-ChildItem "vault\10_Sources" -Directory | Sort-Object Name
+
+# 2. 查看已有 Source 文件列表
+Get-ChildItem "vault\10_Sources\YYYY-MM-DD" -File | Select-Object Name
+
+# 3. 找最新 Capture 文件（没有日期文件夹的优先处理）
+Get-ChildItem "vault\00_Capture\External" -Recurse -File | Sort-Object LastWriteTime -Descending | Select-Object -First 20 FullName, LastWriteTime
+```
+
+判断规则：
+- Capture 对应的 Source 已存在 → 跳过，不重复处理
+- 没有日期子文件夹的 Capture 文件（如"未命名.md"）→ 通常是今天最新的，优先处理
+- Source 里找不到对应文件 → 才是真正需要处理的
+
 ## General Rules
 
 - 同一天同一主题的内容可以合并成一个 Source 文件。
