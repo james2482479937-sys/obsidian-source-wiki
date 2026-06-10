@@ -101,6 +101,12 @@ python obsidian-source-wiki/scripts/process_capture_links.py --vault "<vault>" -
 
 处理抖音等 AnyContent 链路时，这条统一命令会先检查 `http://127.0.0.1:8080`。如果后端没启动，并且本地已经有 `anycontent-obsidian-backend` 仓库和 `uv`，它会自动执行 `uv run python web/app.py` 启动后端。
 
+注意：统一命令生成的是 Source 草稿。Agent 还必须把草稿改成带语义小标题的结构化 Source，并通过：
+
+```powershell
+python obsidian-source-wiki/scripts/validate_source_structure.py --source "<source_path>"
+```
+
 把 Source 提炼成 Knowledge：
 
 ```text

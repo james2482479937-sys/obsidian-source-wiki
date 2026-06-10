@@ -1,4 +1,5 @@
 import argparse
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -67,6 +68,56 @@ knowledge_links: []
         assert "[[20_Knowledge/Concepts/test-concept]]" in source_text
         assert "[[10_Sources/2026-06-10/test-source]]" in knowledge_text
 
+        structured_source = vault / "10_Sources" / "2026-06-10" / "structured-source.md"
+        write(
+            structured_source,
+            """---
+title: "structured-source"
+created: 2026-06-10
+status: source_structured
+knowledge_links: []
+---
+
+# structured-source
+
+## Source Info
+
+- 原链接：https://example.com
+
+## 第一个主题：背景和问题
+
+这里是一段结构化后的源材料，保留原始内容的意思，并且把自然段切开。
+
+## 第二个主题：具体例子
+
+这里记录来源中提到的例子，不做过度总结。
+
+## 第三个主题：结论和后续
+
+这里记录来源最后收束到的判断，方便以后回溯阅读。
+
+## Structure Tags
+
+- 主题：测试
+- 人物：
+- 概念：
+- 场景：
+
+## Linked Knowledge
+
+- 
+""",
+        )
+        run(
+            [
+                sys.executable,
+                str(skill / "scripts" / "validate_source_structure.py"),
+                "--source",
+                str(structured_source),
+            ],
+            cwd=skill,
+        )
+
         capture = vault / "00_Capture" / "External" / "2026-06-10" / "links.md"
         write(
             capture,
@@ -91,11 +142,7 @@ knowledge_links: []
         if args.keep:
             keep_path = Path.cwd() / "_smoke_test_vault"
             if keep_path.exists():
-                import shutil
-
                 shutil.rmtree(keep_path)
-            import shutil
-
             shutil.copytree(vault, keep_path)
             print(f"kept={keep_path}")
 

@@ -190,7 +190,7 @@ def save_images(vault: Path, raw_path: Path, cwd: Path) -> str:
     )
 
 
-def process_item(vault: Path, item: dict, timeout: int, assume_ready: bool) -> dict:
+def process_item(vault: Path, item: dict, timeout: int) -> dict:
     cwd = scripts_dir()
     result = {
         "platform": item["platform"],
@@ -236,8 +236,8 @@ def process_item(vault: Path, item: dict, timeout: int, assume_ready: bool) -> d
     if item["save_images"] and raw_path:
         image_output = save_images(vault, raw_path, cwd)
         result["image_save_output"] = image_output.strip()
-    result["status"] = "draft_source_created"
-    result["next_step"] = "Run semantic Source structuring before treating the note as final."
+    result["status"] = "source_draft_needs_semantic_structuring"
+    result["next_step"] = "Required: rewrite the Source with semantic headings, set status: source_structured, then run validate_source_structure.py."
     return result
 
 
@@ -288,7 +288,7 @@ def main() -> None:
 
     results = []
     for item in items:
-        results.append(process_item(vault, item, args.timeout, args.assume_ready))
+        results.append(process_item(vault, item, args.timeout))
 
     print("processed_results:")
     print(json.dumps(results, ensure_ascii=False, indent=2))

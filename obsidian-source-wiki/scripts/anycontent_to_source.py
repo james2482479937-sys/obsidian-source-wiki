@@ -37,7 +37,7 @@ def write_text(path: Path, text: str) -> None:
 def extract_urls(text: str) -> list[str]:
     urls = []
     for match in SUPPORTED_URL.finditer(text):
-        url = match.group(0).rstrip(".,;，。；!?)）]")
+        url = match.group(0).rstrip(".,;，。；!?)）")
         if url not in urls:
             urls.append(url)
     return urls
@@ -176,7 +176,7 @@ def build_source(vault: Path, raw_path: Path, raw_md: str, capture_path: Path | 
         "",
         f"# {title}",
         "",
-        "> This draft was generated from AnyContent raw output. Run the semantic Source structuring pass before treating it as final.",
+        "> Draft only. This Source is not complete until an agent rewrites it with semantic headings and `status: source_structured`.",
         "",
         "## Source Info",
         "",

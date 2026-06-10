@@ -5,7 +5,7 @@ description: Build and operate an Obsidian-based AI knowledge workflow with Capt
 
 # Obsidian Source Wiki
 
-Version: 0.3.1
+Version: 0.3.2
 
 Use this skill to help a user build or operate an Obsidian knowledge workflow where plugins import raw material, scripts bridge unsupported platforms, and the agent performs semantic structuring and knowledge distillation.
 
@@ -63,10 +63,13 @@ Recommended optional plugins:
 6. Use `scripts/anycontent_to_source.py` for AnyContent-supported links such as Douyin video/image posts.
 7. Use `scripts/xhs_to_source.py` for Xiaohongshu video/image posts.
 8. If the capture text explicitly asks to save images, use `scripts/save_images_from_raw.py` on the raw file and link the saved files from the Source note.
-9. After raw import, read `references/source_structuring.md` and polish the Source note into a readable, semantically titled Source.
-10. When asked to extract lasting knowledge, read `references/knowledge_distillation.md`.
-11. Use `scripts/create_knowledge_note.py` to create the Knowledge note scaffold and update the Source backlink.
-12. Fill the generated Knowledge note with the distilled concept, method, project, workflow, or media note.
+9. After raw import, read `references/source_structuring.md` and polish every returned `source_path` into a readable Source with semantic topic headings.
+10. Set the polished Source frontmatter to `status: source_structured`.
+11. Run `scripts/validate_source_structure.py --source "<source_path>"`.
+12. If validation fails, keep editing the Source. Do not report the import as complete while validation fails.
+13. When asked to extract lasting knowledge, read `references/knowledge_distillation.md`.
+14. Use `scripts/create_knowledge_note.py` to create the Knowledge note scaffold and update the Source backlink.
+15. Fill the generated Knowledge note with the distilled concept, method, project, workflow, or media note.
 
 ## Fast Path for Configured Vaults
 
@@ -104,7 +107,21 @@ python scripts/process_capture_links.py --vault "<vault>" --date YYYY-MM-DD --as
 
 Use `--no-start-backend` only when debugging and you want to manage the backend manually.
 
-After it creates draft Source notes, run the semantic Source structuring pass.
+The unified processor only creates draft Source notes. A draft is not done.
+
+For every returned `source_path`, the agent must immediately:
+
+1. Read the generated Source and, when needed, the linked raw file.
+2. Replace mechanical sections such as `视频转录`, `图片 OCR`, `Transcript`, or `内容` with semantic H2 headings that describe the real topic blocks.
+3. Split each topic block into readable natural paragraphs.
+4. Set `status: source_structured`.
+5. Run:
+
+```powershell
+python scripts/validate_source_structure.py --source "<source_path>"
+```
+
+Do not tell the user the Capture-to-Source task is complete until this validation passes.
 
 ## Important Boundaries
 
@@ -112,6 +129,7 @@ After it creates draft Source notes, run the semantic Source structuring pass.
 - Do not store API keys inside the skill. Read them from the user's existing plugin settings or environment.
 - Do not put plugin temp output in the main knowledge areas. Keep it under `_System`.
 - Do not treat raw transcripts or OCR dumps as final Source notes.
+- Do not report a Source as complete if it still has only `视频转录`, `图片 OCR`, `Transcript`, `内容`, or paragraph-only structure.
 - Do not turn Source notes into summaries. Source notes should preserve source meaning and improve readability.
 - Only Knowledge notes should distill, generalize, compare, and link ideas.
 - By default, do not save image attachments. Save images only when the capture text near the link says `保存图片`, `留图`, `下载图片`, `下载原图`, or an equivalent instruction.
@@ -128,5 +146,6 @@ After it creates draft Source notes, run the semantic Source structuring pass.
 - Failure handling: `references/troubleshooting.md`
 - Reusable scripts: `scripts/`
 - Unified Capture processor: `scripts/process_capture_links.py`
+- Source structure validator: `scripts/validate_source_structure.py`
 - Knowledge linking helper: `scripts/create_knowledge_note.py`
 - Rule templates to copy into vaults: `assets/rules/`
