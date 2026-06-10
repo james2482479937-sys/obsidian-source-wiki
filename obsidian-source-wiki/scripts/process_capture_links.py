@@ -94,6 +94,10 @@ def ensure_anycontent_backend(vault: Path, backend_dir_arg: str | None, startup_
     if os.name == "nt":
         creationflags = subprocess.CREATE_NEW_PROCESS_GROUP | subprocess.DETACHED_PROCESS
 
+    env = os.environ.copy()
+    env.setdefault("PYTHONIOENCODING", "utf-8")
+    env.setdefault("PYTHONUTF8", "1")
+
     process = subprocess.Popen(
         [uv_path, "run", "python", "web/app.py"],
         cwd=backend_dir,
@@ -101,6 +105,7 @@ def ensure_anycontent_backend(vault: Path, backend_dir_arg: str | None, startup_
         stderr=subprocess.STDOUT,
         stdin=subprocess.DEVNULL,
         creationflags=creationflags,
+        env=env,
     )
 
     deadline = time.time() + startup_timeout
