@@ -1,0 +1,6 @@
+interface:
+  display_name: "AI HOT Article Pipeline"
+  short_description: "抓取今日 AI HOT，自动选题并生成中文文章"
+  default_prompt: "Use $ai-hot-article-pipeline to fetch today's AI HOT news, choose a discussable topic, and generate a Chinese article."
+policy:
+  allow_implicit_invocation: true

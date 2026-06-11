@@ -1,175 +1,94 @@
 # obsidian-source-wiki
 
-一个给 Agent 使用的 Obsidian 知识库搭建 Skill。
+这是一个结合多个 AI Skill 的个人知识收藏与写作工作流。
 
-它的目标不是把 Obsidian 变成一个复杂系统，而是让你的 Agent 帮你搭好一套稳定的知识流：
+它不只是单独的 Obsidian 入库工具，也不是单独的文章生成器，而是把“收藏、转写、整理、选题、写作、寓言化表达”放在同一个项目里：先把外部内容和灵感稳定沉淀到 Obsidian，再从 AI 热点、参考文章或概念出发生成可审核、可复制的写作产物。
 
-```text
-Capture 随手记录
--> Source 结构化原材料
--> Knowledge 提炼后的知识
--> Rules 处理规则
--> _System 插件和脚本工作区
-```
+## 这个项目解决什么
 
-## 它能做什么
+日常使用时，它覆盖两条主线：
 
-这个 Skill 可以帮助 Agent：
+- 知识收藏：处理 Obsidian Capture、外部链接、抖音/小红书/视频/图片内容，把原始材料整理成 Source，再进入 Knowledge 工作流。
+- 写作生产：从 AI HOT 热点、参考文章或指定概念出发，生成文章选题、正文、本地预览页或寓言故事。
 
-- 创建 Obsidian 知识库文件夹结构
-- 安装并复制规则文档
-- 检查 Obsidian 插件、API Key、ffmpeg、Python 环境
-- 处理抖音视频和图文链接
-- 处理小红书视频和图文链接
-- 把视频转录、图片 OCR、网页内容整理成 Source
-- 把 Source 进一步提炼成 Knowledge
-- 自动维护 Source 和 Knowledge 的双向链接
-- 对已经配置好环境的用户，一条命令处理 Capture 里的抖音/小红书链接
+所以它实际是一个“写作和收藏共存”的 Skill 项目：`obsidian-source-wiki` 负责收藏入口，`ai-hot-article-pipeline`、`ai-article-generator` 和 `fable-concept-writer` 负责写作出口。
 
-## 文件夹结构
+## 包含的 Skills
 
-```text
-00_Capture/
-  External/
-  Personal/
+| Skill | 用途 |
+|---|---|
+| `obsidian-source-wiki` | Obsidian Capture、链接转写、Source 结构化、灵感入库、知识整理 |
+| `ai-hot-article-pipeline` | 抓取今日 AI HOT，生成日报、候选选题，并串联文章生成 |
+| `ai-article-generator` | 根据参考文章和主题生成中文长文、本地预览页和可复制正文 |
+| `fable-concept-writer` | 用寓言解释跨学科高阶概念，并保存为本地 Markdown 产物 |
 
-10_Sources/
+## 推荐使用方式
 
-20_Knowledge/
-  Concepts/
-  Methods/
-  Projects/
-  Workflows/
-  Media/
-
-90_Rules/
-
-_System/
-  AnyContent/
-  Attachments/
-  Plugin_Output/
-  Logs/
-```
-
-## 安装方式
-
-把 `obsidian-source-wiki` 文件夹复制到你的 Codex skills 目录。
-
-Windows:
-
-```text
-%USERPROFILE%\.codex\skills\obsidian-source-wiki
-```
-
-macOS / Linux:
-
-```text
-~/.codex/skills/obsidian-source-wiki
-```
-
-然后你可以对 Agent 说：
-
-```text
-Use obsidian-source-wiki to set up this Obsidian vault: <你的 Obsidian 仓库路径>
-```
-
-## 使用示例
-
-初始化一个 Obsidian 仓库：
-
-```text
-Use obsidian-source-wiki to set up this Obsidian vault: D:\Obsidian\MyVault.
-```
-
-检查环境是否准备好：
-
-```text
-Use obsidian-source-wiki to check whether this vault is ready for Douyin and Xiaohongshu media import: D:\Obsidian\MyVault.
-```
-
-处理 Capture 里的链接：
+如果你只需要 Obsidian 知识库搭建和链接入库，使用：
 
 ```text
 Use obsidian-source-wiki to process today's Capture links into Sources.
 ```
 
-如果你的环境已经配置好，Agent 会优先使用统一入口：
-
-```powershell
-python obsidian-source-wiki/scripts/process_capture_links.py --vault "<vault>" --date YYYY-MM-DD --assume-ready
-```
-
-处理抖音等 AnyContent 链路时，这条统一命令会先检查 `http://127.0.0.1:8080`。如果后端没启动，并且本地已经有 `anycontent-obsidian-backend` 仓库和 `uv`，它会自动执行 `uv run python web/app.py` 启动后端。
-
-注意：统一命令生成的是 Source 草稿。Agent 还必须把草稿改成带语义小标题的结构化 Source，并通过：
-
-```powershell
-python obsidian-source-wiki/scripts/validate_source_structure.py --source "<source_path>"
-```
-
-把 Source 提炼成 Knowledge：
+如果你想从当天 AI 热点里选题写文章，使用：
 
 ```text
-Use obsidian-source-wiki to distill this Source into Knowledge: <source file>.
+Use ai-hot-article-pipeline to fetch today's AI HOT news and generate a Chinese article.
 ```
 
-## 需要提前准备什么
-
-Skill 可以创建文件夹和规则，但媒体导入需要你自己准备这些东西：
-
-- Obsidian 桌面端
-- 开启 Obsidian Community plugins
-- 安装 AnyContent Vault Importer
-- 启动 AnyContent backend：`http://127.0.0.1:8080`
-- 注册 SiliconFlow，并把 API Key 填进 AnyContent 设置
-- 安装 `ffmpeg`
-- Python 环境
-- Python 包 `requests`
-
-如果这些没准备好，Agent 会告诉你哪些链路暂时不能跑，例如：
-
-- 抖音导入不能跑
-- 小红书视频转录不能跑
-- 小红书图片 OCR 不能跑
-
-## 测试
-
-不用真实 API，也可以先验证 Skill 包是否完整：
-
-```powershell
-python obsidian-source-wiki/scripts/smoke_test.py
-```
-
-看到下面结果说明基础结构没问题：
+如果你已经有参考文章和主题，使用：
 
 ```text
-smoke_test=ok
+Use ai-article-generator to turn this reference article and topic into a Chinese article.
+```
+
+如果你想用寓言解释一个概念，使用：
+
+```text
+Use fable-concept-writer to write a fable about this concept.
+```
+
+## 本地项目路由
+
+本仓库同时保留 `AGENTS.md`，用于说明在本地写作项目里如何根据用户意图选择 skill。核心规则是：
+
+- 包含“链接、处理、转写、Obsidian、capture、Source、灵感”的请求，优先进入 `obsidian-source-wiki`。
+- 包含“AI HOT、今日新闻、热点选题、生成文章”的请求，进入 `ai-hot-article-pipeline`。
+- 包含“参考文章 + 主题”的请求，进入 `ai-article-generator`。
+- 包含“寓言、用寓言解释概念、今日寓言”的请求，进入 `fable-concept-writer`。
+
+## 安装方式
+
+把需要的 skill 文件夹复制到你的 Codex skills 目录：
+
+Windows:
+
+```text
+%USERPROFILE%\.codex\skills\<skill-name>
+```
+
+macOS / Linux:
+
+```text
+~/.codex/skills/<skill-name>
+```
+
+如果要在一个写作项目里组合使用这些 skill，可以把本仓库的 `AGENTS.md` 放到项目根目录，再把需要的 skill 放到项目内 `.codex/skills/`。
+
+## 文件结构
+
+```text
+.
+├─ AGENTS.md
+├─ obsidian-source-wiki/
+├─ ai-hot-article-pipeline/
+├─ ai-article-generator/
+└─ fable-concept-writer/
 ```
 
 ## 安全说明
 
-这个仓库不包含任何个人 API Key，也不包含本地 Obsidian 插件配置。
-
-用户自己的 API Key 应该只保存在本地 Obsidian 插件设置或环境变量里，不要提交到 GitHub。
-
-## English
-
-`obsidian-source-wiki` is an agent skill for building and operating an Obsidian-based AI knowledge workflow.
-
-It helps an agent set up and run:
-
-- `00_Capture` for low-friction daily capture
-- `10_Sources` for structured source material
-- `20_Knowledge` for distilled notes
-- `90_Rules` for workflow rules
-- `_System` for plugin output, raw transcripts, OCR, attachments, and logs
-
-It also documents and automates parts of the media pipeline:
-
-- Douyin video/image posts through AnyContent
-- Xiaohongshu video transcription through the bundled adapter
-- Xiaohongshu image OCR through the bundled adapter
-- Source-to-Knowledge linking through a helper script
+这个仓库不应该包含个人 API Key、真实账号 token、本地私密配置或未准备公开的文章草稿。`outputs/` 下的具体产物属于本地交付结果，默认不提交到 GitHub。
 
 ## License
 

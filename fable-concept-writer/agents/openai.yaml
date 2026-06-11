@@ -1,0 +1,4 @@
+interface:
+  display_name: "寓言概念写作"
+  short_description: "用短寓言解释跨学科高阶概念并保存为本地交付文件版本"
+  default_prompt: "写一则寓言解释今天轮换到的研究生水平概念，并保存到 outputs。"

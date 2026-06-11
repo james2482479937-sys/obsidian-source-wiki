@@ -1,0 +1,6 @@
+interface:
+  display_name: "AI Article Generator"
+  short_description: "根据参考文章和选定主题生成可发布中文长文与本地预览"
+  default_prompt: "Use $ai-article-generator to turn my selected reference article and topic into a Chinese article."
+policy:
+  allow_implicit_invocation: true
